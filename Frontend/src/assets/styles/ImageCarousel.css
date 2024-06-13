@@ -1,0 +1,22 @@
+/* ImageCarousel.css */
+
+/* .carouselContainer { */
+  /* position: relative; Ensure the blur overlay is positioned relative to this container */
+  /* background: rgba(0, 0, 0, 0.3); Adjust the opacity for the blur effect */
+  /* backdrop-filter: blur(10px); Apply the blur effect */
+  /* height: 100%; Set the height of the carousel container */
+/* } */
+
+/* .carouselContent { */
+  /* position: relative; */
+  /* z-index: 1; Ensure the carousel content is above the background */
+  /* height: 100%; Set the height of the carousel content */
+/* } */
+
+/* .blurOverlay { */
+  /* position: absolute; */
+  /* top: 0; */
+  /* left: 0; */
+  /* right: 0;
+  bottom: 0;
+} */
