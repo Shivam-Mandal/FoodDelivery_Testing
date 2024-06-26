@@ -128,7 +128,12 @@ const Navbar = ({ setLogin }) => {
           <button onClick={() => handleNavigation('/', 'services')} className="block text-gray-700 hover:text-gray-500">Services</button>
           <Link to="/about" onClick={toggleMenu} className="block text-gray-700 hover:text-gray-500">About-us</Link>
           <Link to="/cart" onClick={toggleMenu} className="block text-gray-700 hover:text-gray-500">Cart</Link>
-          {token && (
+          {!token ? (
+            <>
+              <button onClick={() => {setLogin(true); toggleMenu();}} className="block text-gray-700 hover:text-gray-500">Login</button>
+              <button onClick={() => {navigate('/signup'); toggleMenu();}} className="block text-gray-700 hover:text-gray-500">Signup</button>
+            </>
+          ) : (
             <>
               <Link to="/myorders" onClick={toggleMenu} className="block text-gray-700 hover:text-gray-500">Orders</Link>
               <button onClick={handleLogout} className="block text-gray-700 hover:text-gray-500">Logout</button>

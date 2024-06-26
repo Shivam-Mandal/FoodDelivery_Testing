@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Verify from './Pages/Verify'
 import MyOrders from './Pages/MyOrders'
 import GoToTopButton from './components/GoToTopButton'
+import Demo from './components/Demo'
 
 function App() {
   const [login, setLogin] = useState(false);
@@ -23,6 +24,7 @@ function App() {
     <div className='' style={{ fontFamily: "outfit" }}>
       <FoodState>
         <ToastContainer/>
+        {/* <Demo/> */}
         <Router>
           {login?<LoginModal setLogin={setLogin}/>:<></>}
           <Navbar  setLogin={setLogin}/>

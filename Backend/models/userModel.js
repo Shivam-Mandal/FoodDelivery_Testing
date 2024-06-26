@@ -15,7 +15,14 @@ const userSchema = new mongoose.Schema({
     cartData:{
         type:Object,
         default:{}
+    },
+    resetOtp: {
+        type: String,
+    },
+    otpExpires: {
+        type: Date,
     }
+
 },{minimize:false})
 
 const userModel = mongoose.model.user|| mongoose.model("user",userSchema);

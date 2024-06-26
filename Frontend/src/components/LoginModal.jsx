@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import FoodContext from '../context/FoodContext';
-import axios from 'axios'
-import { toast } from 'react-toastify'
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const LoginModal = ({ setLogin }) => {
     const [currState, setCurrState] = useState("Login");
     const { url, setToken } = useContext(FoodContext);
+    const [otpSent, setOtpSent] = useState(false);
+    const [otp, setOtp] = useState("");
+    const [newPassword, setNewPassword] = useState("");
 
     const onClose = () => {
         setLogin(false);
@@ -15,7 +18,7 @@ const LoginModal = ({ setLogin }) => {
     const [input, setInput] = useState({
         name: "",
         email: "",
-        password: ""
+        password: "",
     });
 
     const handleChange = (e) => {
@@ -28,51 +31,91 @@ const LoginModal = ({ setLogin }) => {
         let cnt = 0;
         try {
             if (currState === 'Login') {
-                newUrl += "/api/user/login"
-            }
-            else {
-                newUrl += '/api/user/register'
+                newUrl += "/api/user/login";
+            } else {
+                newUrl += '/api/user/register';
                 cnt = 1;
             }
             const res = await axios.post(newUrl, input);
             if (res.data.success) {
-                setToken(res.data.token)
-                localStorage.setItem("token", res.data.token)
-                setLogin(false)
-                if (cnt == 0) {
-                    toast.success("Login successfull")
-
-                }
-                else {
-                    try{
-                        await axios.post(url+"/api/mail/sendmail",{
-                            to:input.email,
-                            subject:"Welcome to Our Service",
-                            text:`Hi ${input.name},\n\nThank you for registering with us.`
-                        })
+                setToken(res.data.token);
+                localStorage.setItem("token", res.data.token);
+                setLogin(false);
+                if (cnt === 0) {
+                    toast.success("Login successful");
+                } else {
+                    try {
+                        await axios.post(url + "/api/mail/sendmail", {
+                            to: input.email,
+                            subject: "Welcome to Our Service",
+                            text: `Hi ${input.name},\n\nThank you for registering with us.`
+                        });
                         toast.success("Registration successful and email sent");
-                    }catch(error){
+                    } catch (error) {
                         console.error('Error sending email:', error);
                         toast.error('Registration successful but failed to send email');
                     }
-                    
                 }
-
-            }
-            else {
-                if(cnt=0){
-                    toast.error("Login failed")
-                }
-                else{
-                    toast.error("Registration failed")
+            } else {
+                if (cnt === 0) {
+                    toast.error("Login failed");
+                } else {
+                    toast.error("Registration failed");
                 }
             }
         } catch (error) {
             toast.error(error.response?.data?.message || "An error occurred");
         }
-        console.log('Form submitted:', input);
-
     };
+
+    const handleForgetPassword = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await axios.post(`${url}/api/user/forget-password`, { email: input.email });
+            if (res.data.success) {
+                try {
+                    await axios.post(`${url}/api/mail/sendmail`, {
+                        to: input.email,
+                        subject: "Password Reset OTP",
+                        text: `Your OTP for password reset is: ${res.data.otp}`
+                    });
+                    setOtp(res.data.otp);
+                    toast.success("OTP sent successfully to your email");
+                    setOtpSent(true);
+                } catch (error) {
+                    console.error('Error sending OTP email:', error);
+                    toast.error('Failed to send OTP email');
+                }
+            } else {
+                toast.error("Failed to send OTP");
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "An error occurred");
+        }
+    };
+
+    const handleOtpSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await axios.post(`${url}/api/user/reset-password`, {
+                email: input.email,
+                otp,
+                password: newPassword
+            });
+            console.log(res);
+            if (res.data.success) {
+                toast.success("Password reset successfully");
+                setOtpSent(false);
+                setNewPassword("")
+                setCurrState("Login");
+            } else {
+                toast.error(res.data.message || "Failed to reset password");
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "An error occurred");
+        }
+    };
+    
 
     useEffect(() => {
         console.log(input);
@@ -85,62 +128,135 @@ const LoginModal = ({ setLogin }) => {
                     <h2 className="text-2xl font-bold">{currState}</h2>
                     <button onClick={onClose}><FaTimes size={20} /></button>
                 </div>
-                <form onSubmit={handleSubmit}>
-                    {currState === "Signup" && (
+                {otpSent ? (
+                    <form onSubmit={handleOtpSubmit}>
                         <div className="mb-4">
-                            <label className="block text-gray-700">Name</label>
+                            <label className="block text-gray-700">Enter OTP</label>
                             <input
-                                name="name"
-                                onChange={handleChange}
-                                value={input.name}
+                                name="otp"
+                                onChange={(e) => setOtp(e.target.value)}
+                                value={otp}
                                 type="text"
                                 className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
+                                placeholder='Enter OTP'
+                                required
                             />
                         </div>
-                    )}
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Email</label>
-                        <input
-                            name="email"
-                            onChange={handleChange}
-                            value={input.email}
-                            type="email"
-                            className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Password</label>
-                        <input
-                            name="password"
-                            onChange={handleChange}
-                            value={input.password}
-                            type="password"
-                            className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <button type="submit" className="bg-green-500 text-white w-full text-lg px-4 py-2 rounded">
-                            {currState === "Login" ? "Login" : "Signup"}
-                        </button>
-                    </div>
-                    <div>
-                        {currState === "Login" ? (
-                            <p>
-                                Create a new account?
-                                <span onClick={() => setCurrState("Signup")} className='font-semibold text-orange-400 cursor-pointer'>
-                                    Signup
-                                </span>
-                            </p>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">New Password</label>
+                            <input
+                                name="newPassword"
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                value={newPassword}
+                                type="password"
+                                className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
+                                placeholder='Enter new password'
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <button type="submit" className="bg-blue-500 text-white w-full text-lg px-4 py-2 rounded">
+                                Reset Password
+                            </button>
+                        </div>
+                        <div className="mb-4">
+                            <button type="submit" className="bg-blue-500 text-white w-full text-lg px-4 py-2 rounded">
+                                Reset Password
+                            </button>
+                        </div>  
+                    </form>
+                ) : (
+                    <>
+                        {currState === "ForgetPassword" ? (
+                            <form onSubmit={handleForgetPassword}>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Email</label>
+                                    <input
+                                        name="email"
+                                        onChange={handleChange}
+                                        value={input.email}
+                                        type="email"
+                                        className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
+                                        placeholder='Enter your email'
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <button type="submit" className="bg-blue-500 text-white w-full text-lg px-4 py-2 rounded">
+                                        Send Reset Link
+                                    </button>
+                                </div>
+                            </form>
                         ) : (
-                            <p>
-                                Already have an account?
-                                <span onClick={() => setCurrState("Login")} className='font-semibold text-orange-400 cursor-pointer'>
-                                    Login
-                                </span>
-                            </p>
+                            <form onSubmit={handleSubmit}>
+                                {currState === "Signup" && (
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700">Name</label>
+                                        <input
+                                            name="name"
+                                            onChange={handleChange}
+                                            value={input.name}
+                                            type="text"
+                                            className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
+                                            placeholder='Enter your full name'
+                                            required
+                                        />
+                                    </div>
+                                )}
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Email</label>
+                                    <input
+                                        name="email"
+                                        onChange={handleChange}
+                                        value={input.email}
+                                        type="email"
+                                        className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
+                                        placeholder='Enter your email'
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Password</label>
+                                    <input
+                                        name="password"
+                                        onChange={handleChange}
+                                        value={input.password}
+                                        type="password"
+                                        className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
+                                        placeholder='Enter your password'
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <button type="submit" className="bg-green-500 text-white w-full text-lg px-4 py-2 rounded">
+                                        {currState === "Login" ? "Login" : "Signup"}
+                                    </button>
+                                </div>
+                                <div>
+                                    {currState === "Login" ? (
+                                        <p>
+                                            <span onClick={() => setCurrState("ForgetPassword")} className='text-blue-700 cursor-pointer'>
+                                                Forget Password?
+                                            </span>
+                                            <br />
+                                            Create a new account?
+                                            <span onClick={() => setCurrState("Signup")} className='font-semibold text-orange-400 cursor-pointer'>
+                                                Signup
+                                            </span>
+                                        </p>
+                                    ) : (
+                                        <p>
+                                            Already have an account?
+                                            <span onClick={() => setCurrState("Login")} className='font-semibold text-orange-400 cursor-pointer'>
+                                                Login
+                                            </span>
+                                        </p>
+                                    )}
+                                </div>
+                            </form>
                         )}
-                    </div>
-                </form>
+                    </>
+                )}
             </div>
         </div>
     );

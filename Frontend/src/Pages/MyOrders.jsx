@@ -6,12 +6,15 @@ import { toast } from "react-toastify";
 const MyOrders = () => {
     const { token, url } = useContext(FoodContext);
     const [data, setData] = useState([]);
+
     
     const fetchOrderData = async () => {
         try {
             const res = await axios.post(url + '/api/order/userorder', {}, { headers: { token } });
             console.log(res)
             setData(res.data.data);
+            
+            
         } catch (error) {
             toast.error('Failed to fetch orders');
         }
@@ -22,7 +25,6 @@ const MyOrders = () => {
             fetchOrderData();
             localStorage.removeItem('cartData')
             toast.success('Your orders fetched successfully');
-
         }
     }, [token]);
 
