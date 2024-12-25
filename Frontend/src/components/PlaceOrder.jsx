@@ -70,7 +70,7 @@ const PlaceOrder = () => {
 
     return (
         <>
-            <div className="flex flex-col md:flex-row md:space-x-8 p-6 bg-gray-100 min-h-screen">
+            <div className="flex w-full flex-col md:flex-row md:space-x-8 p-6 bg-gray-100 min-h-screen">
                 <div className="w-full md:w-1/2 p-6 bg-white rounded-lg shadow-md">
                     <h2 className="text-2xl font-semibold mb-6">Shipping Address</h2>
                     <form onSubmit={placeOrder}>

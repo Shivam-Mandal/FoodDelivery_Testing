@@ -33,26 +33,30 @@ const sendmail = async (req, res) => {
 
 const sendBill = async (req, res) => {
     try {
-        const { userId, orderId } = req.body;
+        const { orderId } = req.body;
 
         const order = await orderModel.findById(orderId);
         if (!order) {
-            return res.status(404).json({ message: "Order not found" });
+            console.error("Order not found");
+            return res.status(404).json({ success: false, message: "Order not found" });
         }
 
-        const user = await userModel.findById(userId);
+        const user = await userModel.findById(order.userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            console.error("User not found");
+            return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        // Ensure 'user.email' exists before sending email
         if (!user.email) {
-            return res.status(400).json({ message: "User email is missing" });
+            console.error("User email is missing");
+            return res.status(400).json({ success: false, message: "User email is missing" });
         }
 
         const orderItems = order.items.map(item => `${item.name} x ${item.quantity}`).join('\n');
         const billText = `Hi ${user.name},\n\nHere is your bill for the order:\n\nTotal Amount: Rs ${order.amount}\nItems:\n${orderItems}\n\nThank you for ordering with us!`;
+
         const emailContent = {
+            from: `FlavorFeet<${transporter.options.auth.user}>`,
             to: user.email,
             subject: 'Your Order Bill',
             text: billText,
@@ -60,14 +64,16 @@ const sendBill = async (req, res) => {
 
         const emailRes = await sendmail(emailContent);
         if (emailRes.success) {
-            res.status(200).json({ message: "Bill sent to your email successfully" });
+            return res.status(200).json({ success: true, message: "Bill sent to your email successfully" });
         } else {
-            res.status(500).json({ message: "Failed to send bill email", error: emailRes.error });
+            console.error("Failed to send bill email:", emailRes.error);
+            return res.status(500).json({ success: false, message: "Failed to send bill email", error: emailRes.error });
         }
     } catch (error) {
         console.error('Error sending bill:', error);
-        res.status(500).json({ message: "Error sending bill" });
+        return res.status(500).json({ success: false, message: "Error sending bill" });
     }
-}
+};
+
 
 module.exports = { sendmail, sendBill };

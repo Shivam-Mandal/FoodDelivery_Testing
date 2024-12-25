@@ -5,7 +5,6 @@ const fs = require('fs')
 const addFood = async (req, res) => {
     if(!req.file){
         return res.status(400).json({ success: false, message: 'Image file is required' });
-
     }
     let image_filename = req.file.filename; // store the uploaded file name in this variable
 

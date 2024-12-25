@@ -40,3 +40,34 @@
 .read-the-docs {
   color: #888;
 } */
+body.light {
+  --background-color: white;
+  --text-color: black;
+}
+
+body.dark {
+  --background-color: rgba(0, 0, 0, 0.832);
+  --text-color: white;
+}
+
+.app {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}

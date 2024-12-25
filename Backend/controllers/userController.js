@@ -7,7 +7,7 @@ const JWT_SECRET = "foodDeliveryApplication"
 const nodemailer = require('nodemailer')
 
 
-
+    
 // create token
 const createToken = (id) => {
     return jwt.sign({ id }, JWT_SECRET)
@@ -37,7 +37,7 @@ const login = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ success: false, message: 'Error' });
     }
-
+    
 }
 const register = async (req, res) => {
     const { name, email, password } = req.body;
@@ -150,7 +150,7 @@ const resetPassword = async (req, res) => {
         }
 
         // Check if the OTP has expired
-        if (user.otpExpires < Date.now()) {
+        if (user.otpExpires < Date.now())    {
             return res.status(400).json({ message: 'OTP expired' });
         }
 

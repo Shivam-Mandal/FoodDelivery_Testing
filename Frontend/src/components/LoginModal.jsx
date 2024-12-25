@@ -159,11 +159,7 @@ const LoginModal = ({ setLogin }) => {
                                 Reset Password
                             </button>
                         </div>
-                        <div className="mb-4">
-                            <button type="submit" className="bg-blue-500 text-white w-full text-lg px-4 py-2 rounded">
-                                Reset Password
-                            </button>
-                        </div>  
+                       
                     </form>
                 ) : (
                     <>

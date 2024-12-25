@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-  
 import { assets } from '../assets/assets';
 
 const Footer = () => {
   return (
-    <div className="py-10 bg-black text-white flex flex-col md:flex-row justify-between items-center px-5 md:px-20" id='contact-service'>
+    <div className="py-10 bg-black text-white flex flex-col md:flex-row justify-between items-center px-5 md:px-20 w-full" id='contact-service'>
       <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
         <div className="rounded-full p-2 bg-white mb-4">
           <img src={assets.logo} className="w-40" alt="FlavorFeet Logo" />
@@ -33,7 +32,7 @@ const Footer = () => {
         </ul>
       </div>
     </div>
-  )
+  );
 };
 
 export default Footer;

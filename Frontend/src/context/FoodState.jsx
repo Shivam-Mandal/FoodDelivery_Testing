@@ -19,7 +19,7 @@ const FoodState = (props) => {
 
     const loadCartItem = async () => {
         try {
-            const res = await axios.post(url + '/api/cart/get', {}, { headers: { token} });
+            const res = await axios.post(url + '/api/cart/get', {}, { headers: { token } });
             setCartItem(res.data.cartData);
         } catch (error) {
             console.error("Failed to load cart item:", error);
@@ -27,42 +27,22 @@ const FoodState = (props) => {
     };
 
     const addToCart = async (itemId) => {
-        const newCartItem = {...cartItem}
-        console.log('item Id:', itemId);
-        console.log('token during add to cart:', token);
-        // if (!cartItem[itemId]) {
-        //     setCartItem((prev) => ({ ...prev, [itemId]: 1 }));
-        // } else {
-        //     setCartItem((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-        // }
-        if(!newCartItem[itemId]){
+        const newCartItem = { ...cartItem }
+        if (!newCartItem[itemId]) {
             newCartItem[itemId] = 1;
-        }
-        else{
-            newCartItem[itemId]+=1;
+        } else {
+            newCartItem[itemId] += 1;
         }
         setCartItem(newCartItem)
 
         if (token) {
             try {
-                // await axios.post(
-                //     `${url}/api/cart/add`,
-                //     { itemId },
-                //     // { headers: { Authorization: `Bearer ${token}` } }
-                //     {headers:token}
-                // );
-                // await axios.post(
-                //     `${url}/api/cart/add`,
-                //     { itemId },
-                //     { headers: {token} }
-                // );
                 await axios.post(
                     `${url}/api/cart/add`,
                     { itemId },
-                    { headers: {token} }
+                    { headers: { token } }
                 );
                 await loadCartItem();
-                
             } catch (error) {
                 console.error("Error adding to cart:", error);
             }
@@ -70,14 +50,6 @@ const FoodState = (props) => {
     };
 
     const removeFromCart = async (itemId) => {
-        // setCartItem((prev) => {
-        //     const updatedCart = { ...prev, [itemId]: prev[itemId] - 1 };
-        //     if (updatedCart[itemId] <= 0) {
-        //         delete updatedCart[itemId];
-        //     }
-        //     return updatedCart;
-        // });
-
         const newCartItem = { ...cartItem };
         if (newCartItem[itemId] > 1) {
             newCartItem[itemId] -= 1;
@@ -91,7 +63,7 @@ const FoodState = (props) => {
                 await axios.post(
                     `${url}/api/cart/remove`,
                     { itemId },
-                    { headers: {token } }
+                    { headers: { token } }
                 );
                 await loadCartItem();
             } catch (error) {
@@ -113,6 +85,26 @@ const FoodState = (props) => {
         return totalAmount;
     };
 
+    const [isDarkMode, setDarkMode] = useState(false);
+    const [theme, setTheme] = useState('');
+
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setDarkMode(savedTheme === 'dark');
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        setTheme(isDarkMode ? 'dark' : 'light');
+        document.body.className = isDarkMode ? 'dark' : 'light';
+    }, [isDarkMode]);
+
+    const toggleDarkMode = (checked) => {
+        setDarkMode(checked);
+    };
+
     const stateValue = {
         food_list,
         cartItem,
@@ -122,7 +114,10 @@ const FoodState = (props) => {
         getTotalCartItem,
         url,
         setToken,
-        token
+        token,
+        theme,
+        toggleDarkMode,
+        isDarkMode,
     };
 
     useEffect(() => {
@@ -130,22 +125,17 @@ const FoodState = (props) => {
             await fetchFoodList();
             const storedToken = localStorage.getItem("token");
             if (storedToken) {
-                console.log("Token from localStorage:", storedToken);
                 setToken(storedToken);
-                // await loadCartItem();
             }
         }
         loadData();
     }, []);
-    useEffect(()=>{
-        if(token){
-            loadCartItem()
-        }
-    },[token])
 
     useEffect(() => {
-        console.log("Cart items:", cartItem);
-    }, [cartItem]);
+        if (token) {
+            loadCartItem();
+        }
+    }, [token]);
 
     return (
         <FoodContext.Provider value={stateValue}>
