@@ -14,7 +14,8 @@
 
 // module.exports = connectToMongo;
 const m = require('mongoose')
-const URL = "mongodb://127.0.0.1:27017/FoodDelivery";
+require('dotenv').config()  
+const URL = process.env.mongoURL;
 
 const connectToMongo = ()=>{
     m.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true });
