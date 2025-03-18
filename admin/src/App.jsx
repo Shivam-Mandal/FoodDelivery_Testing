@@ -9,7 +9,9 @@ import List from './pages/List';
 import Orders from './pages/Orders';
 
 function App() {
-  const url = "http://localhost:3000"
+  // const url = "http://localhost:3000"
+  const url = "https://fooddelivery-backend-j1h7.onrender.com"
+  
   return (
     <>
       <div className="container mx-auto">
