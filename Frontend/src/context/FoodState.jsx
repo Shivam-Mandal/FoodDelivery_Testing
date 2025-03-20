@@ -6,8 +6,13 @@ const FoodState = (props) => {
     const [cartItem, setCartItem] = useState({});
     const [token, setToken] = useState("");
     const [food_list, setFoodList] = useState([]);
-    const url = "http://localhost:3000";
+
+    // const url = "http://localhost:3000";
     // const url = "http://3.109.213.130:3000";
+
+    // const url = "http://localhost:3000";
+    const url = "https://fooddelivery-backend-j1h7.onrender.com";
+
 
     const fetchFoodList = async () => {
         try {
