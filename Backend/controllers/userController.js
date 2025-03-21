@@ -40,7 +40,7 @@ const login = async (req, res) => {
     
 }
 const register = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password,gender,address,phone } = req.body;
 
     try {
         const userExist = await userModel.findOne({ email })
@@ -60,8 +60,11 @@ const register = async (req, res) => {
 
         const newUser = await userModel.create({
             name: name,
-            email: email,
-            password: hashPassword
+            email: email,   
+            password: hashPassword,
+            gender,
+            address,
+            phone
         })
 
         // const user = await newUser.save()

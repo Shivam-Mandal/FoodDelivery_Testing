@@ -19,7 +19,11 @@ const LoginModal = ({ setLogin }) => {
         name: "",
         email: "",
         password: "",
+        gender:"",
+        address:"",
+        phone:""
     });
+    console.log(input)
 
     const handleChange = (e) => {
         setInput(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -27,9 +31,15 @@ const LoginModal = ({ setLogin }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
         let newUrl = url;
         let cnt = 0;
+        if(input.phone.length!=10){
+            toast.error("Enter valid phone number")
+            return;
+        }
         try {
+            
             if (currState === 'Login') {
                 newUrl += "/api/user/login";
             } else {
@@ -117,9 +127,9 @@ const LoginModal = ({ setLogin }) => {
     };
     
 
-    useEffect(() => {
-        console.log(input);
-    }, [input]);
+    // useEffect(() => {
+    //     console.log(input);
+    // }, [input]);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -211,6 +221,37 @@ const LoginModal = ({ setLogin }) => {
                                         required
                                     />
                                 </div>
+                                {currState === "Signup" && (
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700">Gender</label>
+                                        <div className="flex space-x-4">
+        
+                                        <label htmlFor="">
+                                            <input type="radio" name="gender" value="male" checked={input.gender === "male"} onChange={handleChange} /> Male
+                                        </label>
+                                        <label htmlFor="">
+                                            <input type="radio" name='gender' value="female" checked={input.gender === "female"} onChange={handleChange} /> Female
+                                        </label>
+                                        </div>
+                                        <div className="my-4">
+                                        <label className="block text-gray-700 ">Address</label>
+                                        <input className='w-full p-2 border text-slate-500 border-gray-300 rounded mt-1' type="text" name='address' value={input.address} onChange={handleChange} placeholder='Enter your address'/>
+                                        </div>
+                                        <div className="">
+                                        <label className="block text-gray-700">Phone</label>
+                                    <input
+                                        name="phone"
+                                        onChange={handleChange}
+                                        value={input.phone}
+                                        type="number"
+                                        className="w-full p-2 border text-slate-500 border-gray-300 rounded mt-1"
+                                        placeholder='Enter your phone number'
+                                        required
+                                    />
+                                        </div>
+                                    </div>
+
+                                )}
                                 <div className="mb-4">
                                     <label className="block text-gray-700">Password</label>
                                     <input
