@@ -63,6 +63,11 @@ cd flavourfleet
 - cd Frontend
 - npm install
 
+### Setup for Admin Pannel
+- Go to Admin folder
+- cd admin
+- npm install
+  
 ### Setup for Backend
 - Go to Backend folder
 - cd Backend
@@ -71,5 +76,8 @@ cd flavourfleet
 ### Run the frontend
 - npm run dev
 
+### Run the admin
+- npm run dev
+  
 ### Run the Server
 - nodemon or npm run start
