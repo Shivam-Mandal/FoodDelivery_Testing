@@ -81,3 +81,25 @@ cd flavourfleet
   
 ### Run the Server
 - nodemon or npm run start
+
+### Setup env in Backend
+- Add mongoDB URI
+- Add email and password for mailing
+
+### ⚠️ Important: Enable App Password for Gmail
+-If you're using Gmail, and you have 2-step verification enabled, you can't use your regular email password. You need to generate an App Password:
+
+- 🔒 How to Generate Gmail App Password:
+- Go to Google My Account
+
+- Navigate to Security
+
+- Enable 2-Step Verification (if not already done)
+
+- Scroll to App Passwords
+
+- Choose Mail as the app and Other (enter FlavourFleet) as the device
+
+- Generate — it will give you a 16-character password
+
+- Use that in .env as EMAIL_PASS
