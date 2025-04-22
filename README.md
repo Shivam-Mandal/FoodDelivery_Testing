@@ -56,3 +56,20 @@ FlavourFleet is a complete food delivery web application developed using the **M
 ```bash
 git clone https://github.com/your-username/flavourfleet.git
 cd flavourfleet
+```
+
+### Setup for Frontend
+- Go to Frontend folder
+- cd Frontend
+- npm install
+
+### Setup for Backend
+- Go to Backend folder
+- cd Backend
+- npm install
+
+### Run the frontend
+- npm run dev
+
+### Run the Server
+- nodemon or npm run start
